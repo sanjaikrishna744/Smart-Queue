@@ -1,0 +1,166 @@
+/* MAIN GRID LAYOUT */
+.patient-layout {
+  width: 100vw;
+  height: 100vh;
+
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+
+  background:
+    linear-gradient(rgba(15,32,39,0.85), rgba(44,83,100,0.85)),
+    url("/login.jpg");
+
+  background-size: cover;
+  background-position: center;
+  color: #eaeaea;
+}
+
+/* LEFT BOOK CARD */
+.hero-card {
+  margin: 50px;
+  padding: 60px;
+
+  display: flex;
+  gap: 40px;
+  align-items: center;
+
+  background: rgba(20,30,40,0.6);
+  backdrop-filter: blur(16px);
+
+  border-radius: 26px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.45);
+}
+
+.hero-text {
+  flex: 1;
+}
+
+.hero-text h1 {
+  font-size: 42px;
+}
+
+.hero-text h2 {
+  color: #00c6ff;
+  margin-top: 6px;
+}
+
+.hero-text p {
+  margin: 20px 0 30px;
+  max-width: 420px;
+  opacity: 0.9;
+}
+
+.hero-text button {
+  padding: 14px 34px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  cursor: pointer;
+}
+
+/* HERO IMAGE */
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-image img {
+  max-width: 320px;
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* RIGHT DOCTOR LIST */
+.doctor-panel {
+  padding: 50px 40px;
+  overflow-y: auto;
+}
+
+.doctor-panel h3 {
+  margin-bottom: 20px;
+}
+
+.doctor-card {
+  background: rgba(255,255,255,0.14);
+  padding: 18px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.doctor-card h4 {
+  margin-bottom: 4px;
+}
+
+.doctor-card span {
+  font-size: 13px;
+  color: #00c6ff;
+}
+
+.doctor-card p {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-top: 8px;
+}
+
+/* OVERLAY */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 20;
+}
+
+/* SLIDE FORM */
+.slide-form {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 40vw;
+  height: 100vh;
+
+  background: rgba(20,30,40,0.75);
+  backdrop-filter: blur(18px);
+
+  padding: 50px;
+  z-index: 30;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slide-form input {
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255,255,255,0.12);
+  color: white;
+}
+
+.slide-form button {
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  cursor: pointer;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .patient-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .doctor-panel {
+    display: none;
+  }
+
+  .slide-form {
+    width: 100vw;
+  }
+}

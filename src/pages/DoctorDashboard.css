@@ -1,0 +1,18 @@
+.doctor-dashboard {
+  padding: 40px;
+}
+
+.patient-card {
+  background: rgba(255,255,255,0.1);
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.patient-card button {
+  margin-top: 10px;
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+}

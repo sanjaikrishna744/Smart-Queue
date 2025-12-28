@@ -1,0 +1,111 @@
+.landing {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+
+  background-image: url("/doctor.jpg");
+  background-size: cover;
+  background-position: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  color: white;
+  overflow: hidden;
+}
+
+/* DARK OVERLAY */
+.landing-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1;
+}
+
+/* MAIN CONTENT */
+.content {
+  position: relative;
+  z-index: 2;
+
+  max-width: 540px;
+  margin-left: 80px;
+  text-align: left;
+}
+
+/* TITLE */
+.content h1 {
+  font-size: 48px;
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.content span {
+  color: #00c6ff;
+}
+
+/* SUBTITLE */
+.content p {
+  margin: 18px 0 28px;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+/* BUTTON */
+.get-started {
+  padding: 14px 34px;
+  border-radius: 30px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  font-weight: 600;
+}
+
+.get-started:hover {
+  transform: translateY(-2px);
+  transition: 0.2s ease;
+}
+
+/* TRUST LINE */
+.trust-line {
+  margin-top: 16px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* SERVICES */
+.services {
+  position: absolute;
+  bottom: 80px;
+  left: 80px;
+
+  display: flex;
+  gap: 18px;
+
+  z-index: 2;
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .content {
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+
+  .content h1 {
+    font-size: 36px;
+  }
+
+  .services {
+    left: 30px;
+    bottom: 60px;
+    flex-wrap: wrap;
+  }
+}

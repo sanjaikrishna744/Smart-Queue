@@ -1,0 +1,163 @@
+/* PAGE */
+.smart-page {
+  position: fixed;
+  inset: 0;
+  padding: 40px;
+  overflow-y: auto;
+
+  background:
+    linear-gradient(rgba(15,32,39,0.85), rgba(44,83,100,0.85)),
+    url("/login.jpg");
+
+  background-size: cover;
+  background-position: center;
+  color: white;
+
+  scroll-behavior: smooth;
+}
+
+/* TITLE */
+.smart-page h1 {
+  font-size: 34px;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  opacity: 0.85;
+  margin-bottom: 26px;
+}
+
+/* PROBLEM BUTTONS */
+.problem-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.problem {
+  padding: 10px 18px;
+  border-radius: 22px;
+  border: none;
+
+  background: rgba(255,255,255,0.25);
+  color: white;
+  cursor: pointer;
+
+  transition:
+    background 0.4s ease,
+    transform 0.25s ease;
+}
+
+.problem:hover {
+  transform: translateY(-2px);
+}
+
+.problem.active {
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+}
+
+/* DOCTOR LIST */
+.doctor-list {
+  margin-top: 28px;
+  display: grid;
+  gap: 22px;
+}
+
+/* CARD */
+.doctor-card {
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(14px);
+  border-radius: 18px;
+  padding: 22px;
+}
+
+/* SPLIT LAYOUT */
+.doctor-card.split {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 20px;
+}
+
+/* TEXT */
+.spec {
+  color: #00c6ff;
+  font-size: 14px;
+}
+
+.desc {
+  margin: 10px 0;
+  opacity: 0.9;
+}
+
+.exp {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* SLOTS */
+.slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.slots span {
+  background: rgba(255,255,255,0.25);
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+/* BUTTON */
+.book-btn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 14px;
+  border: none;
+
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  font-weight: bold;
+}
+
+/* RIGHT PANEL */
+.doctor-right {
+  background: rgba(0,0,0,0.25);
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.doctor-right h4 {
+  color: #00c6ff;
+  margin-bottom: 10px;
+}
+
+.doctor-right ul {
+  padding-left: 18px;
+  font-size: 14px;
+}
+
+.ai-note {
+  margin-top: 12px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .doctor-card.split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 🔥 EXTRA SMOOTH SCROLL */
+.smart-page {
+  scroll-behavior: smooth;
+}
+
+/* GPU acceleration – prevents lag */
+.doctor-card,
+.problem {
+  will-change: transform, opacity;
+}

@@ -1,0 +1,100 @@
+/* ===== PAGE ===== */
+.auth-page {
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background:
+    linear-gradient(
+      rgba(15, 32, 39, 0.75),
+      rgba(44, 83, 100, 0.75)
+    ),
+    url("/login.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ===== CARD ===== */
+.auth-card {
+  width: 360px;
+  max-width: 90%;
+
+  /* 🔥 THIS IS THE KEY FIX */
+  background: rgba(20, 30, 40, 0.55);   /* dark glass, NOT white */
+  backdrop-filter: blur(10px);         /* softer blur */
+
+  padding: 30px;
+  border-radius: 16px;
+
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+
+  color: #eaeaea;   /* soft white, not pure white */
+  text-align: center;
+}
+
+/* ===== TITLE ===== */
+.auth-card h2 {
+  margin-bottom: 18px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* ===== INPUTS ===== */
+.auth-card input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+
+  border-radius: 10px;
+  border: none;
+  outline: none;
+
+  background: rgba(255, 255, 255, 0.12);
+  color: #f1f1f1;
+
+  font-size: 14px;
+}
+
+.auth-card input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ===== BUTTON ===== */
+.auth-card button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+
+  border-radius: 12px;
+  border: none;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+
+  cursor: pointer;
+}
+
+.auth-card button:hover {
+  transform: translateY(-1px);
+}
+
+/* ===== SWITCH TEXT ===== */
+.switch-text {
+  margin-top: 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.switch-text span {
+  color: #00c6ff;
+  cursor: pointer;
+  font-weight: 500;
+}
