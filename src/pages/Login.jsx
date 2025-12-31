@@ -9,8 +9,8 @@ export default function Login() {
     <div className="login-page">
       <motion.div
         className="login-card"
-        initial={{ scale: 0.85, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
+        initial={{ scale: 0.85, opacity: 0, y: 30 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
       >
         <h2>Welcome 👋</h2>
@@ -23,21 +23,19 @@ export default function Login() {
           className="patient"
           onClick={() => navigate("/patient-auth")}
         >
-          Continue as Patient
+          👤 Continue as Patient
         </button>
 
         <div className="divider">
           <span>or</span>
         </div>
 
-        {/* 🔥 ONLY FIX IS HERE */}
-       <button
-  className="doctor"
-  onClick={() => navigate("/doctor-auth")}
->
-  Continue as Doctor
-</button>
-
+        <button
+          className="doctor"
+          onClick={() => navigate("/doctor-auth")}
+        >
+          🩺 Continue as Doctor
+        </button>
 
         <p className="note">
           Secure • Fast • Trusted platform

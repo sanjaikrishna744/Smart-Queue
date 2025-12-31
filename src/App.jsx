@@ -9,6 +9,11 @@ import SmartAppointment from "./pages/SmartAppointment";
 import QueuePage from "./pages/QueuePage";
 import DoctorAuth from "./pages/DoctorAuth";
 import DoctorDashboard from "./pages/DoctorDashboard";
+import PatientProfile from "./pages/PatientProfile";
+import DoctorProfile from "./pages/DoctorProfile";
+import ProfileAuth from "./pages/ProfileAuth";
+import BookAppointment from "./pages/BookAppointment";
+import BookingSuccess from "./pages/BookingSuccess";
 
 export default function App() {
   const location = useLocation();
@@ -24,6 +29,11 @@ export default function App() {
         <Route path="/queue" element={<PageWrapper><QueuePage /></PageWrapper>} />
         <Route path="/doctor-auth" element={<PageWrapper><DoctorAuth /></PageWrapper>} />
         <Route path="/doctor-dashboard" element={<PageWrapper><DoctorDashboard /></PageWrapper>} />
+        <Route path="/patient-profile" element={<PageWrapper><PatientProfile /></PageWrapper>} />
+        <Route path="/doctor-profile" element={<PageWrapper><DoctorProfile /></PageWrapper>} />
+         <Route path="/profile-auth" element={<PageWrapper><ProfileAuth /></PageWrapper>} />
+         <Route path="/book-appointment" element={<PageWrapper><BookAppointment /></PageWrapper>} />
+         <Route path="/booking-success" element={<PageWrapper><BookingSuccess /></PageWrapper>} />
       </Routes>
     </AnimatePresence>
   );

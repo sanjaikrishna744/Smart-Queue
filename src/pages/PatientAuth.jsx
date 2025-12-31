@@ -15,6 +15,11 @@ export default function PatientAuth() {
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
+    if (!email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+
     try {
       if (mode === "login") {
         await signInWithEmailAndPassword(auth, email, password);
@@ -22,9 +27,7 @@ export default function PatientAuth() {
         await createUserWithEmailAndPassword(auth, email, password);
       }
 
-      // 🔥 IMPORTANT CHANGE
       navigate("/patient-details");
-
     } catch (err) {
       alert(err.message);
     }
@@ -36,13 +39,24 @@ export default function PatientAuth() {
         <motion.div
           key={mode}
           className="auth-card"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 40, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -30, scale: 0.95 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
         >
-          <h2>{mode === "login" ? "Patient Login" : "Create Account"}</h2>
+          <h2>
+            {mode === "login" ? "Patient Login" : "Create Patient Account"}
+          </h2>
+
+          <p className="subtitle">
+            {mode === "login"
+              ? "Welcome back. Please login to continue"
+              : "Create your account to book appointments"}
+          </p>
 
           <input
-            placeholder="Email"
+            type="email"
+            placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -55,14 +69,24 @@ export default function PatientAuth() {
           />
 
           <button onClick={handleSubmit}>
-            {mode === "login" ? "Login" : "Signup"}
+            {mode === "login" ? "Login" : "Create Account"}
           </button>
 
           <p className="switch-text">
             {mode === "login" ? (
-              <span onClick={() => setMode("signup")}>Create account</span>
+              <>
+                New patient?{" "}
+                <span onClick={() => setMode("signup")}>
+                  Create account
+                </span>
+              </>
             ) : (
-              <span onClick={() => setMode("login")}>Login</span>
+              <>
+                Already have an account?{" "}
+                <span onClick={() => setMode("login")}>
+                  Login
+                </span>
+              </>
             )}
           </p>
         </motion.div>

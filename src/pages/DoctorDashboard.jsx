@@ -1,76 +1,152 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "../firebase";
-import "./DoctorAuth.css";
+  collection,
+  query,
+  where,
+  onSnapshot,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "../firebase";
+import "./DoctorDashboard.css";
 
-export default function DoctorAuth() {
-  const [mode, setMode] = useState("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+export default function DoctorDashboard() {
+  const [appointments, setAppointments] = useState([]);
+  const [doctorName, setDoctorName] = useState("");
 
-  const handleSubmit = async () => {
-    if (!email || !password) {
-      alert("Enter email & password");
-      return;
-    }
+  // NEW STATE (ONLY UI)
+  const [notes, setNotes] = useState("");
+  const [tablets, setTablets] = useState("");
 
-    try {
-      if (mode === "login") {
-        await signInWithEmailAndPassword(auth, email, password);
-      } else {
-        await createUserWithEmailAndPassword(auth, email, password);
-      }
+  useEffect(() => {
+    const session = sessionStorage.getItem("doctorSession");
+    if (!session) return;
+    setDoctorName(JSON.parse(session).doctorName);
+  }, []);
 
-      navigate("/doctor-dashboard");
-    } catch (err) {
-      alert(err.message);
-    }
+  useEffect(() => {
+    if (!doctorName) return;
+
+    const q = query(
+      collection(db, "appointments"),
+      where("doctorName", "==", doctorName),
+      where("isActive", "==", true)
+    );
+
+    const unsub = onSnapshot(q, (snap) => {
+      setAppointments(
+        snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+      );
+    });
+
+    return () => unsub();
+  }, [doctorName]);
+
+  const approvePatient = async (id) => {
+    await updateDoc(doc(db, "appointments", id), {
+      status: "APPROVED",
+    });
+  };
+
+  const completeConsultation = async (id) => {
+    await updateDoc(doc(db, "appointments", id), {
+      status: "COMPLETED",
+
+      // 👇 NEW DATA (SAFE)
+      doctorNotes: notes,
+      tablets: tablets
+        .split(",")
+        .map(t => t.trim())
+        .filter(Boolean),
+    });
+
+    setNotes("");
+    setTablets("");
+
+    setTimeout(async () => {
+      await updateDoc(doc(db, "appointments", id), {
+        isActive: false,
+      });
+    }, 3000);
   };
 
   return (
-    <div className="auth-page">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={mode}
-          className="auth-card"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-        >
-          <h2>{mode === "login" ? "Doctor Login" : "Doctor Signup"}</h2>
+    <div className="doctor-dashboard">
+      {/* HEADER */}
+      <div className="doctor-header">
+        <div>
+          <h1>Doctor Dashboard</h1>
+          <p className="sub">{doctorName}</p>
+        </div>
 
-          <input
-            placeholder="Doctor Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+        <div className="stats">
+          <div>
+            <span>Active Patients</span>
+            <b>{appointments.length}</b>
+          </div>
+          <div>
+            <span>Status</span>
+            <b className="online">Online</b>
+          </div>
+        </div>
+      </div>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+      {/* GRID */}
+      <div className="patient-grid">
+        {appointments.length === 0 && (
+          <div className="empty">🩺 No patients waiting right now</div>
+        )}
 
-          <button onClick={handleSubmit}>
-            {mode === "login" ? "Login" : "Create Account"}
-          </button>
+        {appointments.map((a) => (
+          <div key={a.id} className="patient-card">
+            <div className="patient-top">
+              <h3>{a.patientName}</h3>
+              <span className={`badge ${a.status.toLowerCase()}`}>
+                {a.status}
+              </span>
+            </div>
 
-          <p className="switch-text">
-            {mode === "login" ? (
-              <span onClick={() => setMode("signup")}>Create account</span>
-            ) : (
-              <span onClick={() => setMode("login")}>Login</span>
+            <p className="problem">{a.problem}</p>
+
+            {/* ONLY WHEN APPROVED */}
+            {a.status === "APPROVED" && (
+              <>
+                <textarea
+                  placeholder="Doctor notes (eg: Take rest, avoid mobile)"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                />
+
+                <input
+                  placeholder="Tablets (comma separated)"
+                  value={tablets}
+                  onChange={(e) => setTablets(e.target.value)}
+                />
+              </>
             )}
-          </p>
-        </motion.div>
-      </AnimatePresence>
+
+            <div className="actions">
+              {(a.status === "BOOKED" || a.status === "ARRIVED") && (
+                <button
+                  className="approve"
+                  onClick={() => approvePatient(a.id)}
+                >
+                  Approve
+                </button>
+              )}
+
+              {a.status === "APPROVED" && (
+                <button
+                  className="complete"
+                  onClick={() => completeConsultation(a.id)}
+                >
+                  Consultation Over
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,163 +1,138 @@
-/* PAGE */
+/* ===== PAGE ===== */
 .smart-page {
-  position: fixed;
-  inset: 0;
-  padding: 40px;
-  overflow-y: auto;
+  min-height: 100vh;
+  padding: 50px 60px;
 
   background:
-    linear-gradient(rgba(15,32,39,0.85), rgba(44,83,100,0.85)),
+    linear-gradient(rgba(12,24,35,0.88), rgba(30,55,75,0.88)),
     url("/login.jpg");
 
   background-size: cover;
   background-position: center;
-  color: white;
-
-  scroll-behavior: smooth;
+  color: #eaeaea;
 }
 
-/* TITLE */
-.smart-page h1 {
+/* ===== HEADER ===== */
+.smart-header h1 {
   font-size: 34px;
-  margin-bottom: 6px;
 }
 
-.subtitle {
+.smart-header p {
+  margin-top: 6px;
   opacity: 0.85;
-  margin-bottom: 26px;
 }
 
-/* PROBLEM BUTTONS */
-.problem-select {
+/* ===== PROBLEM GRID ===== */
+.problem-grid {
+  margin-top: 28px;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 14px;
 }
 
-.problem {
-  padding: 10px 18px;
-  border-radius: 22px;
+.problem-chip {
+  padding: 12px 22px;
+  border-radius: 28px;
   border: none;
 
-  background: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.18);
   color: white;
   cursor: pointer;
 
-  transition:
-    background 0.4s ease,
-    transform 0.25s ease;
+  font-size: 14px;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.problem:hover {
+.problem-chip:hover {
   transform: translateY(-2px);
 }
 
-.problem.active {
+.problem-chip.active {
   background: linear-gradient(to right, #00c6ff, #0072ff);
 }
 
-/* DOCTOR LIST */
-.doctor-list {
-  margin-top: 28px;
-  display: grid;
-  gap: 22px;
+/* ===== DOCTOR SECTION ===== */
+.doctor-section {
+  margin-top: 40px;
 }
 
-/* CARD */
-.doctor-card {
-  background: rgba(255,255,255,0.18);
-  backdrop-filter: blur(14px);
-  border-radius: 18px;
-  padding: 22px;
+.doctor-section h2 {
+  margin-bottom: 20px;
 }
 
-/* SPLIT LAYOUT */
-.doctor-card.split {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 20px;
-}
-
-/* TEXT */
-.spec {
+.doctor-section h2 span {
   color: #00c6ff;
-  font-size: 14px;
 }
 
-.desc {
-  margin: 10px 0;
+/* ===== DOCTOR GRID ===== */
+.doctor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 26px;
+}
+
+/* ===== CARD ===== */
+.doctor-card {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(16px);
+  border-radius: 22px;
+  padding: 24px;
+
+  box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+  transition: transform 0.25s ease;
+}
+
+.doctor-card:hover {
+  transform: translateY(-6px);
+}
+
+/* ===== TEXT ===== */
+.doc-top h3 {
+  margin-bottom: 4px;
+}
+
+.doc-top span {
+  font-size: 13px;
+  color: #00c6ff;
+}
+
+.doc-desc {
+  margin: 14px 0;
+  font-size: 14px;
   opacity: 0.9;
 }
 
-.exp {
-  font-size: 13px;
-  opacity: 0.8;
-}
-
-/* SLOTS */
-.slots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.slots span {
-  background: rgba(255,255,255,0.25);
-  padding: 6px 10px;
-  border-radius: 10px;
-  font-size: 13px;
-}
-
-/* BUTTON */
-.book-btn {
-  width: 100%;
-  margin-top: 14px;
-  padding: 12px;
-  border-radius: 14px;
-  border: none;
-
-  background: linear-gradient(to right, #00c6ff, #0072ff);
-  color: white;
-  font-weight: bold;
-}
-
-/* RIGHT PANEL */
-.doctor-right {
-  background: rgba(0,0,0,0.25);
-  border-radius: 14px;
-  padding: 18px;
-}
-
-.doctor-right h4 {
-  color: #00c6ff;
-  margin-bottom: 10px;
-}
-
-.doctor-right ul {
-  padding-left: 18px;
-  font-size: 14px;
-}
-
-.ai-note {
-  margin-top: 12px;
+.doc-meta {
   font-size: 13px;
   opacity: 0.85;
 }
 
-/* MOBILE */
+/* ===== BUTTON ===== */
+.book-btn {
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px;
+
+  border-radius: 16px;
+  border: none;
+
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.book-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ===== MOBILE ===== */
 @media (max-width: 768px) {
-  .doctor-card.split {
-    grid-template-columns: 1fr;
+  .smart-page {
+    padding: 30px 24px;
   }
-}
 
-/* 🔥 EXTRA SMOOTH SCROLL */
-.smart-page {
-  scroll-behavior: smooth;
-}
-
-/* GPU acceleration – prevents lag */
-.doctor-card,
-.problem {
-  will-change: transform, opacity;
+  .smart-header h1 {
+    font-size: 26px;
+  }
 }

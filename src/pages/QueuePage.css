@@ -1,204 +1,279 @@
+/* ===== PAGE ===== */
 .queue-page {
   min-height: 100vh;
   padding: 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
 
   background:
-    linear-gradient(rgba(15,32,39,0.85), rgba(44,83,100,0.85)),
-    url("/login.jpg");
-
+    linear-gradient(rgba(10, 20, 30, 0.9), rgba(15, 30, 45, 0.9)),
+    url("/queue-bg.png");
   background-size: cover;
-  background-position: center;
-
-  display: flex;
-  gap: 40px;
-  flex-wrap: wrap;
-
-  color: #eaeaea;
+  color: #eaf6ff;
 }
 
-/* PATIENT SUMMARY */
+/* CENTER */
+.queue-page.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== LEFT CARD ===== */
 .summary-card {
-  flex: 1;
-  min-width: 320px;
-
-  background: rgba(20,30,40,0.6);
-  backdrop-filter: blur(14px);
-
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border-radius: 22px;
   padding: 40px;
-  border-radius: 24px;
-
-  box-shadow: 0 30px 70px rgba(0,0,0,0.45);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
 }
 
 .summary-card h2 {
-  margin-bottom: 20px;
+  font-size: 26px;
+  margin-bottom: 18px;
 }
 
 .summary-card p {
-  margin-bottom: 10px;
+  margin: 10px 0;
+  font-size: 15px;
+  opacity: 0.9;
 }
 
 .status {
-  margin-top: 14px;
+  margin-top: 20px;
   font-weight: 600;
 }
 
-.arrived {
-  color: #4ade80;
+.status.arrived {
+  color: #4cd964;
 }
 
-.not-arrived {
-  color: #f87171;
+.status.approved {
+  color: #00c6ff;
 }
 
+/* ARRIVE BUTTON */
 .arrive-btn {
-  margin-top: 24px;
-  padding: 14px 28px;
-
-  border-radius: 30px;
+  margin-top: 20px;
+  padding: 14px 22px;
+  border-radius: 14px;
   border: none;
+  cursor: pointer;
+  font-weight: 600;
 
   background: linear-gradient(to right, #00c6ff, #0072ff);
   color: white;
 
-  cursor: pointer;
+  box-shadow: 0 15px 35px rgba(0, 114, 255, 0.35);
 }
 
-/* QUEUE CARD */
+.arrive-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ERROR */
+.error {
+  margin-top: 14px;
+  color: #ff6b6b;
+  font-size: 14px;
+}
+
+/* ===== RIGHT QUEUE CARD ===== */
 .queue-card {
-  flex: 1;
-  min-width: 320px;
-
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(14px);
-
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(22px);
+  border-radius: 22px;
   padding: 40px;
-  border-radius: 24px;
 
-  box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+  perspective: 1000px;
 }
 
 .queue-card h2 {
-  margin-bottom: 18px;
+  font-size: 24px;
+  margin-bottom: 14px;
 }
+
+/* TOKEN */
+.token {
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #00e5ff;
+}
+
+/* ===== 3D QUEUE ===== */
+.queue-3d {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  transform-style: preserve-3d;
+}
+
+/* QUEUE ITEM */
+.queue-item {
+  padding: 16px 20px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 15px;
+
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+  transform-style: preserve-3d;
+  animation: float 4s ease-in-out infinite;
+}
+
+/* YOU */
+.queue-item.me {
+  background: linear-gradient(
+    to right,
+    rgba(0, 198, 255, 0.8),
+    rgba(0, 114, 255, 0.8)
+  );
+  color: white;
+  box-shadow: 0 18px 40px rgba(0, 198, 255, 0.45);
+}
+
+/* FLOAT ANIMATION */
+@keyframes float {
+  0% {
+    transform: translateY(0) translateZ(0);
+  }
+  50% {
+    transform: translateY(-4px) translateZ(12px);
+  }
+  100% {
+    transform: translateY(0) translateZ(0);
+  }
+}
+
+/* COMPLETED */
+.completed-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(18px);
+  padding: 50px 60px;
+  border-radius: 24px;
+  text-align: center;
+}
+
+.completed-card h2 {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 900px) {
+  .queue-page {
+    grid-template-columns: 1fr;
+    padding: 30px;
+  }
+}
+
+.queue-3d {
+  perspective: 800px;
+  transform-style: preserve-3d;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.queue-item {
+  background: rgba(255,255,255,0.12);
+  padding: 14px 18px;
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease, background 0.3s;
+}
+
+.queue-item.me {
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 10px 30px rgba(0,198,255,0.4);
+}
+
+.queue-card {
+  perspective: 1000px;
+}
+
 .queue-page {
   min-height: 100vh;
-  padding: 60px;
-
-  background:
-    linear-gradient(rgba(15,32,39,0.85), rgba(44,83,100,0.85)),
-    url("/login.jpg");
-
-  background-size: cover;
-  background-position: center;
-
-  display: flex;
-  gap: 40px;
-  flex-wrap: wrap;
-
-  color: #eaeaea;
-}
-
-/* PATIENT SUMMARY */
-.summary-card {
-  flex: 1;
-  min-width: 320px;
-
-  background: rgba(20,30,40,0.6);
-  backdrop-filter: blur(14px);
-
   padding: 40px;
-  border-radius: 24px;
-
-  box-shadow: 0 30px 70px rgba(0,0,0,0.45);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  background: linear-gradient(135deg, #0b1d2a, #122c3d);
+  color: #eaf6ff;
 }
 
-.summary-card h2 {
-  margin-bottom: 20px;
+.queue-page.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.summary-card p {
-  margin-bottom: 10px;
-}
-
-.status {
-  margin-top: 14px;
-  font-weight: 600;
-}
-
-.arrived {
-  color: #4ade80;
-}
-
-.not-arrived {
-  color: #f87171;
+.summary-card,
+.queue-card {
+  background: rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 28px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
 }
 
 .arrive-btn {
-  margin-top: 24px;
-  padding: 14px 28px;
-
-  border-radius: 30px;
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: 14px;
   border: none;
-
   background: linear-gradient(to right, #00c6ff, #0072ff);
   color: white;
-
+  font-weight: 600;
   cursor: pointer;
 }
 
-/* QUEUE CARD */
-.queue-card {
-  flex: 1;
-  min-width: 320px;
+.status.arrived { color: #4dff9a; }
+.status.approved { color: #ffd166; }
 
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(14px);
-
-  padding: 40px;
-  border-radius: 24px;
-
-  box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+.ai-time {
+  margin-top: 8px;
+  font-weight: 600;
 }
 
-.queue-card h2 {
-  margin-bottom: 18px;
+.token {
+  font-size: 34px;
+  font-weight: 700;
+  margin: 10px 0 20px;
+  color: #00e5ff;
 }
 
-/* QUEUE ANIMATION */
-.queue-visual {
-  margin-top: 30px;
+.queue-3d {
+  perspective: 800px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.queue-person {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-
+.queue-item {
   background: rgba(255,255,255,0.12);
-  padding: 12px 16px;
-  border-radius: 14px;
+  padding: 14px;
+  border-radius: 12px;
+  transform-style: preserve-3d;
 }
 
-.queue-person.me {
-  background: rgba(0,198,255,0.25);
-  border-left: 5px solid #00c6ff;
+.queue-item.me {
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: #fff;
+  font-weight: 700;
 }
 
-.avatar {
-  font-size: 26px;
+.completed-card {
+  padding: 40px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  text-align: center;
 }
-
-.new-book-btn {
-  margin-top: 20px;
-  padding: 14px 28px;
-  border-radius: 30px;
-  border: none;
-  background: linear-gradient(to right, #22c55e, #16a34a);
-  color: white;
-  cursor: pointer;
-}
-

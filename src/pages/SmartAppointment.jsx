@@ -1,72 +1,53 @@
-import { useState } from "react";
+// SmartAppointment.jsx
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { doctors } from "../data/doctors";
 import { motion } from "framer-motion";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-} from "firebase/firestore";
-import { auth, db } from "../firebase";
 import "./SmartAppointment.css";
 
 export default function SmartAppointment() {
   const [problem, setProblem] = useState("");
+  const [patient, setPatient] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const data = localStorage.getItem("patientProfile");
+    if (!data) {
+      navigate("/patient-details");
+      return;
+    }
+    setPatient(JSON.parse(data));
+  }, [navigate]);
+
   const problems = [
-    "Chest Pain",
-    "Heart Checkup",
-    "High BP",
-    "Diabetes",
-    "Headache",
-    "Migraine",
-    "Back Pain",
-    "Joint Pain",
+    "Chest Pain","Heart Checkup","High BP","Diabetes",
+    "Headache","Migraine","Back Pain","Joint Pain",
+    "Fever","Cold & Cough","Child Care","Pregnancy Care"
   ];
 
   const filteredDoctors = problem
-    ? doctors.filter((d) => d.problems.includes(problem))
+    ? doctors.filter(d => d.problems.includes(problem))
     : [];
 
-  const bookDoctor = async (doc) => {
-    const patient = JSON.parse(localStorage.getItem("patientDetails"));
-
-    if (!patient) {
-      alert("Patient details missing");
-      return;
-    }
-
-    await addDoc(collection(db, "appointments"), {
-      patientId: auth.currentUser.uid,
-      patientName: patient.name,
-      patientAge: patient.age,
-      patientPhone: patient.phone,
-
-      patientEmail: auth.currentUser.email,
-      problem: problem,
-
-      doctorId: doc.uid,          // 🔥 KEY FIX
-      doctorName: doc.name,
-
-      status: "BOOKED",
-      isActive: true,
-
-      createdAt: serverTimestamp(),
-    });
-
-    navigate("/queue");
+  const selectDoctor = (doc) => {
+    localStorage.setItem(
+      "selectedDoctor",
+      JSON.stringify({ ...doc, problem })
+    );
+    navigate("/book-appointment"); // 👈 NEW PAGE
   };
 
-  return (
-    <motion.div className="smart-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <h1>Select Problem</h1>
+  if (!patient) return null;
 
-      <div className="problem-select">
-        {problems.map((p) => (
+  return (
+    <div className="smart-page">
+      <h1>What problem are you facing?</h1>
+
+      <div className="problem-grid">
+        {problems.map(p => (
           <button
             key={p}
-            className={problem === p ? "problem active" : "problem"}
+            className={problem === p ? "problem-chip active" : "problem-chip"}
             onClick={() => setProblem(p)}
           >
             {p}
@@ -75,22 +56,20 @@ export default function SmartAppointment() {
       </div>
 
       {problem && (
-        <div className="doctor-list">
-          {filteredDoctors.map((doc) => (
-            <div className="doctor-card split" key={doc.id}>
-              <div>
-                <h3>{doc.name}</h3>
-                <p>{doc.speciality}</p>
-                <p>{doc.experience}</p>
+        <div className="doctor-grid">
+          {filteredDoctors.map(doc => (
+            <div key={doc.id} className="doctor-card">
+              <h3>{doc.name}</h3>
+              <p>{doc.speciality}</p>
+              <p>{doc.description}</p>
 
-                <button onClick={() => bookDoctor(doc)}>
-                  Book with this Doctor
-                </button>
-              </div>
+              <button onClick={() => selectDoctor(doc)}>
+                Select & Continue →
+              </button>
             </div>
           ))}
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

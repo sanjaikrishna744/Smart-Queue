@@ -6,21 +6,54 @@ import {
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../firebase";
+import { doctors } from "../data/doctors";
 import "./DoctorAuth.css";
 
 export default function DoctorAuth() {
   const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [doctorId, setDoctorId] = useState("");
+
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
+    if (!doctorId) {
+      alert("Please select your doctor profile");
+      return;
+    }
+
     try {
+      let userCredential;
+
       if (mode === "login") {
-        await signInWithEmailAndPassword(auth, email, password);
+        userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
       }
+
+      const selectedDoctor = doctors.find(
+        (d) => d.id === Number(doctorId)
+      );
+
+      sessionStorage.setItem(
+        "doctorSession",
+        JSON.stringify({
+          uid: userCredential.user.uid,
+          doctorId: selectedDoctor.id,
+          doctorName: selectedDoctor.name,
+          speciality: selectedDoctor.speciality,
+        })
+      );
+
       navigate("/doctor-dashboard");
     } catch (err) {
       alert(err.message);
@@ -28,18 +61,40 @@ export default function DoctorAuth() {
   };
 
   return (
-    <div className="auth-page">
+    <div className="doctor-auth-page">
       <AnimatePresence mode="wait">
         <motion.div
-          key={mode}
-          className="auth-card"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
+          key={mode} // 🔥 KEY POINT FOR TRANSITION
+          className="doctor-auth-card"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -40 }}
+          transition={{ duration: 0.45, ease: "easeInOut" }}
         >
           <h2>
-            {mode === "login" ? "Doctor Login" : "Doctor Signup"}
+            {mode === "login" ? "Doctor Login" : "Doctor Registration"}
           </h2>
+
+          <p className="subtitle">
+            {mode === "login"
+              ? "Access your dashboard and manage patients"
+              : "Create a new doctor account"}
+          </p>
+
+          {/* DOCTOR SELECT */}
+          <div className="select-wrap">
+            <select
+              value={doctorId}
+              onChange={(e) => setDoctorId(e.target.value)}
+            >
+              <option value="">Select Doctor Profile</option>
+              {doctors.map((doc) => (
+                <option key={doc.id} value={doc.id}>
+                  {doc.name} • {doc.speciality}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <input
             placeholder="Doctor Email"
@@ -55,7 +110,9 @@ export default function DoctorAuth() {
           />
 
           <button onClick={handleSubmit}>
-            {mode === "login" ? "Login" : "Create Account"}
+            {mode === "login"
+              ? "Login to Dashboard"
+              : "Create Doctor Account"}
           </button>
 
           <p className="switch-text">
