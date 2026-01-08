@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import http from "http";
 import { Server } from "socket.io";
 import Appointment from "./models/Appointment.js";
+import ConsultationHistory from "./models/ConsultationHistory.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -61,14 +62,39 @@ app.get("/queue/patient/:uid", async (req, res) => {
 });
 
 // ================= DOCTOR =================
+// ================= DOCTOR QUEUE (PRIORITY ORDER) =================
 app.get("/queue/doctor/:doctorId", async (req, res) => {
   const { session } = req.query;
 
-  const queue = await Appointment.find({
-    doctorId: req.params.doctorId,
-    session,
-    status: { $ne: "COMPLETED" },
-  }).sort({ createdAt: 1 });
+  const queue = await Appointment.aggregate([
+    {
+      $match: {
+        doctorId: req.params.doctorId,
+        session,
+        status: { $ne: "COMPLETED" },
+      },
+    },
+    {
+      $addFields: {
+        priorityRank: {
+          $switch: {
+            branches: [
+              { case: { $eq: ["$priorityType", "E1"] }, then: 1 },
+              { case: { $eq: ["$priorityType", "E2"] }, then: 2 },
+              { case: { $eq: ["$priorityType", "E3"] }, then: 3 },
+            ],
+            default: 4, // OPD
+          },
+        },
+      },
+    },
+    {
+      $sort: {
+        priorityRank: 1,
+        createdAt: 1,
+      },
+    },
+  ]);
 
   res.json({ queue });
 });
@@ -83,19 +109,24 @@ app.post("/appointment/status", async (req, res) => {
     { new: true }
   );
 
-  io.emit("QUEUE_UPDATE");
+  emitUpdate();
 
-  // 🔥 AUTO CLEANUP AFTER COMPLETED
-  if (status === "COMPLETED") {
-    setTimeout(async () => {
-      await Appointment.findByIdAndDelete(id);
-      io.emit("QUEUE_UPDATE");
-    }, 6000); // 6 seconds
+  // ✅ COPY TO HISTORY (SAFE)
+  if (status === "COMPLETED" && appt) {
+    await ConsultationHistory.create({
+      patientId: appt.patientId,
+      patientName: appt.patientName,
+      patientAge: appt.patientAge,
+      patientProblem: appt.patientProblem,
+      doctorId: appt.doctorId,
+      doctorName: appt.doctorName,
+      priorityType: appt.priorityType,
+      session: appt.session,
+    });
   }
 
   res.json({ success: true });
 });
-
 // ================= EMERGENCY =================
 app.post("/doctor/emergency", async (req, res) => {
   io.emit("DOCTOR_EMERGENCY");
@@ -118,3 +149,17 @@ app.post("/appointment/transfer", async (req, res) => {
 server.listen(5000, () =>
   console.log("🔥 Smart Queue backend + socket running on 5000")
 );
+// ================= PATIENT HISTORY =================
+// ================= PATIENT HISTORY (SAFE) =================
+app.get("/patient/history/:uid", async (req, res) => {
+  try {
+    const history = await Appointment.find({
+      patientId: req.params.uid,
+      status: "COMPLETED",
+    }).sort({ updatedAt: -1 });
+
+    res.json({ history });
+  } catch (err) {
+    res.status(500).json({ history: [] });
+  }
+});

@@ -37,7 +37,7 @@ export default function BookAppointment() {
 
   const book = async () => {
     if (!doctor || !session || !date) {
-      alert("Select session & date");
+      alert("Select date & session");
       return;
     }
 
@@ -53,7 +53,7 @@ export default function BookAppointment() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           patientId: user.uid,
-          patientName: patient?.name || user.displayName || "Patient",
+          patientName: patient?.name || "Patient",
           patientAge: Number(patient?.age ?? 1),
           patientProblem:
             patient?.problem ||
@@ -62,22 +62,20 @@ export default function BookAppointment() {
 
           doctorId: doctor.id,
           doctorName: doctor.name,
-          session, // already lowercase
+          session,
           priorityType: triage?.priorityType || "OPD",
         }),
       });
 
       const data = await res.json();
-
       if (!data.success) {
-        console.error(data);
         alert("Booking failed");
         return;
       }
 
       navigate("/queue");
     } catch (err) {
-      console.error("FRONTEND ERROR", err);
+      console.error(err);
       alert("Booking error");
     }
   };
@@ -89,11 +87,24 @@ export default function BookAppointment() {
       <div className="book-card">
         <h2>{doctor.name}</h2>
 
+        {/* DATE FIRST */}
+        <div className="date-box">
+          <label>Select Date</label>
+          <input
+            type="date"
+            min={today}
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+        </div>
+
+        {/* SESSION NEXT */}
+        <p className="session-title">Select Session</p>
         <div className="session-grid">
           {["morning", "afternoon", "evening"].map((s) => (
             <button
               key={s}
-              className={session === s ? "active" : ""}
+              className={`session-btn ${session === s ? "active" : ""}`}
               onClick={() => setSession(s)}
             >
               {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -101,14 +112,10 @@ export default function BookAppointment() {
           ))}
         </div>
 
-        <input
-          type="date"
-          min={today}
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
-
-        <button onClick={book}>Confirm Booking</button>
+        {/* CONFIRM LAST */}
+        <button className="confirm-btn" onClick={book}>
+          Confirm Booking
+        </button>
       </div>
     </div>
   );

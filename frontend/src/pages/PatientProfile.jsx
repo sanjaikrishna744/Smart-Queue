@@ -1,105 +1,101 @@
 import { useEffect, useState } from "react";
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-} from "firebase/firestore";
-import { auth, db } from "../firebase";
+import { auth } from "../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "./PatientProfile.css";
 
+const API = "http://localhost:5000";
+
 export default function PatientProfile() {
-  const [profile, setProfile] = useState(null);
-  const [appointments, setAppointments] = useState([]);
-  const navigate = useNavigate();
+  const nav = useNavigate();
+  const [user, setUser] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // 🔐 AUTH
   useEffect(() => {
-    const stored = localStorage.getItem("patientProfile");
-    if (!stored) {
-      navigate("/");
-      return;
-    }
-    setProfile(JSON.parse(stored));
-  }, [navigate]);
-
-  useEffect(() => {
-    if (!auth.currentUser) return;
-
-    const q = query(
-      collection(db, "appointments"),
-      where("patientId", "==", auth.currentUser.uid)
-    );
-
-    const unsub = onSnapshot(q, (snap) => {
-      setAppointments(snap.docs.map(d => d.data()));
+    return onAuthStateChanged(auth, (u) => {
+      if (!u) nav("/profile-auth");
+      else setUser(u);
     });
-
-    return () => unsub();
   }, []);
 
-  if (!profile) return null;
+  // 📜 LOAD HISTORY
+  useEffect(() => {
+    if (!user) return;
 
-  const completed = appointments.filter(a => a.status === "COMPLETED");
+    const load = async () => {
+      const r = await fetch(
+        `${API}/patient/history/${user.uid}`
+      );
+      const d = await r.json();
+      setHistory(d.history || []);
+      setLoading(false);
+    };
+
+    load();
+  }, [user]);
+
+  if (loading) {
+    return <p className="loading">Loading profile...</p>;
+  }
 
   return (
-    <div className="patient-profile-page">
-      <div className="patient-profile-card">
-        <h1>Patient Profile</h1>
+    <div className="profile-bg">
+      <div className="profile-glass">
+        <h2>👤 Patient Profile</h2>
+        <p className="email">{user.email}</p>
 
-        {/* BASIC INFO */}
-        <div className="info-grid">
-          <div><span>Name</span><p>{profile.name}</p></div>
-          <div><span>Email</span><p>{profile.email}</p></div>
-          <div><span>Age</span><p>{profile.age}</p></div>
-          <div><span>Gender</span><p>{profile.gender}</p></div>
-          <div><span>Phone</span><p>{profile.phone}</p></div>
-        </div>
+        <h3 className="section-title">
+          Consultation History
+        </h3>
 
-        <div className="divider" />
-
-        {/* HISTORY */}
-        <h3>Consultation History</h3>
-
-        {completed.length === 0 && (
-          <p className="muted">No completed consultations yet</p>
+        {history.length === 0 && (
+          <div className="empty">
+            No completed consultations yet 🩺
+          </div>
         )}
 
-        {completed.map((a, i) => (
-          <div key={i} className="history-card">
-            <p><b>Doctor:</b> {a.doctorName}</p>
-            <p><b>Problem:</b> {a.problem}</p>
-
-            {a.doctorNotes && (
-              <div className="note">
-                <b>Doctor Notes</b>
-                <p>{a.doctorNotes}</p>
+        {/* ✅ GRID WRAPPER ADDED */}
+        <div className="history-grid">
+          {history.map((h) => (
+            <div key={h._id} className="history-card">
+              {/* TOP ROW */}
+              <div className="row">
+                <b>{h.patientName}</b>
+                <span className={`badge ${h.priorityType}`}>
+                  {h.priorityType}
+                </span>
               </div>
-            )}
 
-            {a.tablets && a.tablets.length > 0 && (
-              <div className="tablets">
-                <b>Tablets</b>
-                <ul>
-                  {a.tablets.map((t, idx) => (
-                    <li key={idx}>💊 {t}</li>
-                  ))}
-                </ul>
+              {/* DETAILS */}
+              <p className="muted">
+                Age: {h.patientAge}
+              </p>
+
+              <p className="problem">
+                Problem: {h.patientProblem}
+              </p>
+
+              <p className="muted">
+                Doctor: {h.doctorName}
+              </p>
+
+              {/* FOOTER */}
+              <div className="row small">
+                <span>
+                  {new Date(
+                    h.updatedAt
+                  ).toLocaleDateString()}
+                </span>
+                <span className="status done">
+                  COMPLETED
+                </span>
               </div>
-            )}
-          </div>
-        ))}
-
-        <button
-          className="logout"
-          onClick={() => {
-            localStorage.removeItem("patientProfile");
-            auth.signOut();
-            navigate("/");
-          }}
-        >
-          Logout
-        </button>
+            </div>
+          ))}
+        </div>
+        {/* ✅ END GRID */}
       </div>
     </div>
   );
