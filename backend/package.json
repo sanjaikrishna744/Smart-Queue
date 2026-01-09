@@ -7,8 +7,11 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^4.22.1",
+    "groq-sdk": "^0.37.0",
     "mongoose": "^9.1.2",
     "socket.io": "^4.8.3",
     "uuid": "^13.0.0"

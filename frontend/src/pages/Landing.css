@@ -185,3 +185,14 @@
     bottom: 55px;
   }
 }
+
+.top-bar {
+  position: absolute;
+  top: 22px;
+  right: 32px;
+
+  display: flex;
+  gap: 18px; /* 🔥 spacing increased */
+
+  z-index: 10;
+}

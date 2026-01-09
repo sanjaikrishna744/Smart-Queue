@@ -1,10 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { auth } from "../firebase";
+import { useState } from "react";
+import ChatbotModal from "../components/GeminiChatbot";
 import "./Landing.css";
 
 export default function Landing() {
   const navigate = useNavigate();
+  const [openChat, setOpenChat] = useState(false);
 
   // 🔥 PROFILE BUTTON LOGIC
   const handleProfile = () => {
@@ -15,22 +18,33 @@ export default function Landing() {
     } else if (auth.currentUser) {
       navigate("/patient-profile");
     } else {
-      navigate("/login");
+      navigate("/profile-auth");
     }
   };
 
   return (
     <div className="landing">
-      {/* 🔥 TOP PROFILE BUTTON */}
+      {/* 🔥 TOP RIGHT BAR */}
       <div className="top-bar">
-       <button
-  className="profile-btn"
-onClick={() => navigate("/profile-auth")}
->
-  👤 Profile
-</button>
+        <button
+          className="ai-btn"
+          onClick={() => setOpenChat(true)}
+        >
+          🤖 AI Chat
+        </button>
 
+        <button
+          className="profile-btn"
+          onClick={handleProfile}
+        >
+          👤 Profile
+        </button>
       </div>
+
+      {/* CHATBOT MODAL */}
+      {openChat && (
+        <ChatbotModal onClose={() => setOpenChat(false)} />
+      )}
 
       {/* OVERLAY */}
       <div className="landing-overlay" />

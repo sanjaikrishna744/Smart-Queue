@@ -17,6 +17,7 @@ import BookingSuccess from "./pages/BookingSuccess";
 import SymptomChecker from "./pages/SymptomChecker";
 import DoctorEmergency from "./pages/DoctorEmergency";
 import DoctorConsult from "./pages/DoctorConsult";
+import GeminiChatbot from "./components/GeminiChatbot";
 
 export default function App() {
   const location = useLocation();
@@ -40,6 +41,7 @@ export default function App() {
         <Route path="/symptom-checker" element={<PageWrapper><SymptomChecker /></PageWrapper>} />
          <Route path="/doctor-consult" element={<PageWrapper><DoctorConsult /></PageWrapper>} />
           <Route path="/doctor-emergency" element={<PageWrapper><DoctorEmergency /></PageWrapper>} />
+           <Route path="/gemini-chatbot" element={<PageWrapper><GeminiChatbot /></PageWrapper>} />
       </Routes>
     </AnimatePresence>
   );
